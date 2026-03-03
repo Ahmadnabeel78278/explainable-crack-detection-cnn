@@ -120,14 +120,29 @@ Avoid markdown formatting.
 
 
 def generate_gradcam(model, img_array, target_layer_name='multiply_1'):
+    """
+    Generate Grad-CAM heatmap for the predicted class.
+    Handles cases where model output might be a list.
+    """
     grad_model = tf.keras.models.Model(
         inputs=model.input,
         outputs=[model.get_layer(target_layer_name).output, model.output]
     )
     
     with tf.GradientTape() as tape:
-        conv_output, predictions = grad_model(img_array)
-        loss = predictions[:, 0]
+        outputs = grad_model(img_array)
+        # outputs is a list: [conv_output, predictions]
+        conv_output = outputs[0]
+        predictions = outputs[1]
+        
+        # If predictions is a list (e.g., for multiple outputs), take the first element
+        if isinstance(predictions, list):
+            pred_tensor = predictions[0]
+        else:
+            pred_tensor = predictions
+        
+        # For binary classification, loss is the score for the predicted class
+        loss = pred_tensor[:, 0]
     
     grads = tape.gradient(loss, conv_output)
     pooled_grads = tf.reduce_mean(grads, axis=(1, 2))
