@@ -8,4 +8,4 @@ pillow
 flask
 google-genai
 python-dotenv
-guicorn
+gunicorn
