@@ -1,4 +1,5 @@
 import os
+import re
 import datetime
 from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
@@ -27,6 +28,8 @@ def index():
             file.save(filepath)
 
             pred_class, confidence, explanation, heatmap_path = predict_and_explain(model, filepath)
+            # Format explanation: replace each bullet (starting with "- ") with a line break + bullet
+            explanation_html = re.sub(r'(?<!\A)\s*([-*] |\d+\. )', r'<br>\1', explanation)
 
             # Add to history
             history.append({
@@ -46,7 +49,7 @@ def index():
                                     heatmap_file=heatmap_path,
                                     prediction=pred_class,
                                     confidence=f"{confidence:.2%}",
-                                    explanation=explanation)
+                                    explanation=explanation_html)
     return render_template('index.html', history=history[::-1])  # show newest first
 
 if __name__ == '__main__':

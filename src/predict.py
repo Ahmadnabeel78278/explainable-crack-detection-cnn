@@ -113,8 +113,6 @@ Avoid markdown formatting.
                 max_output_tokens=800,   # Increased to prevent cut-off
             )
         )
-
-        # 🔥 Use safe extraction instead of response.text
         return extract_full_text(response)
 
     except Exception as e:
