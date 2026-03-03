@@ -1,0 +1,66 @@
+def explain_with_gemini(pred_class, confidence):
+    prompt = f"""
+    A concrete structure image has been classified as '{pred_class}' with {confidence:.2f} confidence.
+    Explain in simple terms what this means for structural health, the possible causes of cracks (if any),
+    and why the model might have arrived at this prediction. Include theoretical background about crack formation in concrete.
+    Provide a concise bullet-point explanation (about 200 words total) covering:
+    - What the detection implies for structural integrity
+    - Common causes of cracks (e.g., stress, temperature, corrosion)
+    - Why the model might have high confidence
+    - Relevant civil engineering concepts briefly explained
+    Use simple, clear language. Format as bullet points.
+    """
+    try:
+        response = client.models.generate_content(
+            model=WORKING_MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.7,
+                max_output_tokens=512,
+            )
+        )
+        return response.text
+    except Exception as e:
+        return f"Explanation unavailable: {str(e)}"
+
+
+
+
+def explain_with_gemini(pred_class, confidence):
+    prompt = f"""
+The CNN model predicted:
+- Class: {pred_class}
+- Confidence: {confidence:.2f}
+
+Generate a clear, specific explanation strictly based on this prediction.
+
+Rules:
+- Do NOT give generic textbook theory.
+- Do NOT use markdown symbols like **.
+- Do NOT repeat the prompt.
+- Keep explanation under 180 words.
+- Use simple technical language suitable for engineering students.
+- Format response in 4 clear bullet points using '-' only.
+
+Structure:
+
+1) What this prediction means for the structure.
+2) What visible features the CNN likely detected.
+3) Why the confidence level is high/low.
+4) What should be done next (inspection/monitoring/etc.).
+
+Make the explanation directly tied to the predicted class.
+"""
+
+    try:
+        response = client.models.generate_content(
+            model=WORKING_MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.3,  # 🔥 Lower for more precise explanation
+                max_output_tokens=300,
+            )
+        )
+        return response.text.strip()
+    except Exception as e:
+        return f"Explanation unavailable: {str(e)}"

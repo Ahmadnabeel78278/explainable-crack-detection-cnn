@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+crackenv/
+.env
+data/
+data_splitted/
+.vscode/
+.ipynb_checkpoints/
+app/static/uploads/

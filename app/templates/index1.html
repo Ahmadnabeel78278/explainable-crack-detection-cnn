@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concrete Crack Detection</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --gradient-start: #5f72e4;
+            --gradient-end: #9b51e0;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --shadow-color: rgba(0, 0, 0, 0.15);
+        }
+        body {
+            background: radial-gradient(circle at top left, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .card {
+            border: none;
+            border-radius: 32px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 30px 60px var(--shadow-color), 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+        }
+        h1 {
+            font-weight: 700;
+            font-size: 2.4rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+        .subhead {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #334155;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Compact upload area */
+        .upload-area {
+            border: 2px dashed #94a3b8;
+            border-radius: 20px;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            background: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-area::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        .upload-area.dragover {
+            background: rgba(90, 103, 216, 0.1);
+            border-color: #5a67d8;
+            transform: scale(1.01);
+            box-shadow: 0 8px 20px rgba(90, 103, 216, 0.3);
+        }
+        .upload-area.dragover::after {
+            border-color: #5a67d8;
+            box-shadow: 0 0 12px #5a67d8;
+            animation: ripple 1.5s infinite;
+        }
+        @keyframes ripple {
+            0% { box-shadow: 0 0 0 0 rgba(90, 103, 216, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(90, 103, 216, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(90, 103, 216, 0); }
+        }
+        .upload-area i {
+            font-size: 2.5rem;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .upload-area:hover i {
+            color: #5a67d8;
+        }
+        .drag-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e293b;
+            margin-top: 0.5rem;
+        }
+        .browse-text {
+            color: #5a67d8;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
+        .file-guidance {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        #image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 1rem;
+            display: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            transition: opacity 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #5a67d8, #7f5af0);
+            border: none;
+            padding: 12px 18px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 40px;
+            box-shadow: 0 8px 16px -5px rgba(90, 103, 216, 0.5);
+            transition: all 0.2s;
+            letter-spacing: 0.01em;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(90, 103, 216, 0.7);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            filter: grayscale(30%);
+        }
+        .btn-outline-secondary {
+            border-radius: 40px;
+            padding: 8px 16px;
+            border: 1px solid #94a3b8;
+            color: #334155;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .btn-outline-secondary:hover {
+            background: #edf2f7;
+            border-color: #5a67d8;
+            color: #5a67d8;
+        }
+        .spinner-border {
+            display: none;
+        }
+        .status-message {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-top: 0.75rem;
+            min-height: 1.2rem;
+            font-style: italic;
+        }
+        @media (max-width: 576px) {
+            h1 { font-size: 2rem; }
+            .subhead { font-size: 1rem; }
+            .card-body { padding: 2rem 1.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-7">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <h1 class="text-center">An Explainable Crack Detection System in Concrete</h1>
+                        <p class="subhead text-center">Upload an image of a concrete surface. Our deep learning model will analyze the structure to identify and locate potential cracks.</p>
+                        
+                        <form id="upload-form" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <div class="upload-area" id="drop-area">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                    <div class="drag-text">Drag & drop an image here</div>
+                                    <div class="mt-1">or <span class="browse-text" id="browse-link">click to select</span></div>
+                                    <div class="file-guidance">
+                                    </div>
+                                    <input type="file" name="image" id="file-input" accept="image/jpeg,image/png" hidden required>
+                                </div>
+                                <img id="image-preview" src="#" alt="Preview">
+                                <div class="status-message text-center" id="status-message"></div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Inspect Surface
+                                </button>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-outline-secondary" id="sample-btn">
+                                        <i class="bi bi-image me-2"></i>Try a sample
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function() {
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('file-input');
+            const browseLink = document.getElementById('browse-link');
+            const preview = document.getElementById('image-preview');
+            const form = document.getElementById('upload-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const spinner = submitBtn.querySelector('.spinner-border');
+            const statusMsg = document.getElementById('status-message');
+            const sampleBtn = document.getElementById('sample-btn');
+
+            function updatePreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function clearPreview() {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+
+            dropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropArea.classList.add('dragover');
+            });
+
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.classList.remove('dragover');
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    fileInput.files = files;
+                    updatePreview(files[0]);
+                }
+            });
+
+            browseLink.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.click();
+            });
+
+            dropArea.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length) {
+                    updatePreview(fileInput.files[0]);
+                } else {
+                    clearPreview();
+                }
+            });
+
+            sampleBtn.addEventListener('click', () => {
+                alert('In a real deployment, this would load a sample image. For now, please upload your own.');
+            });
+
+            form.addEventListener('submit', (e) => {
+                if (fileInput.files.length === 0) {
+                    alert('Please select an image first.');
+                    e.preventDefault();
+                    return;
+                }
+                spinner.style.display = 'inline-block';
+                submitBtn.disabled = true;
+                statusMsg.textContent = 'Inspecting surface patterns...';
+            });
+
+            window.addEventListener('load', () => {
+                statusMsg.textContent = '';
+            });
+        })();
+    </script>
+</body>
+</html>
