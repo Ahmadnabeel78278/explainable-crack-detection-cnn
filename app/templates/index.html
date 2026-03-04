@@ -132,6 +132,20 @@
             color: #64748b;
             margin-top: 0.2rem;
         }
+        /* Sample button styling */
+        .btn-sample {
+            border-radius: 40px;
+            padding: 10px 20px;
+            border: 1px solid #cbd5e0;
+            background: white;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+        .btn-sample:hover {
+            background: #edf2f7;
+            border-color: #5a67d8;
+            color: #5a67d8;
+        }
     </style>
 </head>
 <body>
@@ -165,6 +179,13 @@
                                 </button>
                             </div>
                         </form>
+
+                        <!-- Sample image button -->
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('sample') }}" class="btn btn-sample">
+                                <i class="bi bi-image me-2"></i>Try a sample image
+                            </a>
+                        </div>
                     </div>
                 </div>
 
