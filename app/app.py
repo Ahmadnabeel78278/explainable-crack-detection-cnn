@@ -1,6 +1,5 @@
 import os
 import re
-import datetime
 from flask import Flask, request, render_template, make_response
 from werkzeug.utils import secure_filename
 import sys
@@ -44,7 +43,7 @@ def index():
                 'filename': filename,
                 'prediction': pred_class,
                 'confidence': confidence,
-                'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'image_path': 'uploads/' + filename,
                 'heatmap_path': heatmap_path
             })
@@ -85,7 +84,7 @@ def download_pdf():
     c.drawString(margin, y, "Concrete Crack Detection Report")
     y -= 25
     c.setFont("Helvetica", 10)
-    c.drawString(margin, y, f"Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    c.drawString(margin, y, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     y -= 30
 
     # Images side by side at the top
@@ -182,7 +181,7 @@ Images:
 - Original: {image_file}
 - Heatmap: {heatmap_file if heatmap_file != 'None' else 'Not generated'}
 
-Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 """
     response = make_response(content)
     response.headers["Content-Disposition"] = "attachment; filename=crack_analysis.txt"
