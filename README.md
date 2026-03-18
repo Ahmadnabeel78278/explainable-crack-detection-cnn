@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-# Explainable Crack Detection in Concrete
-=======
 # Explainable Crack Detection in Civil Infrastructures 
->>>>>>> b48b3055 (Complete project with all source code and updates)
+
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://explainablecrackdetectioncnn.onrender.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
