@@ -7,7 +7,11 @@ def create_data_generators(
     img_size=(224,224),
     batch_size=32
 ):
+<<<<<<< HEAD
     # Training data generator with augmentation
+=======
+
+>>>>>>> b48b3055 (Complete project with all source code and updates)
     train_datagen = ImageDataGenerator(
         rescale=1./255,
         rotation_range=20,
@@ -19,7 +23,10 @@ def create_data_generators(
         fill_mode='nearest'
     )
     
+<<<<<<< HEAD
     # Validation/test generator (only rescaling)
+=======
+>>>>>>> b48b3055 (Complete project with all source code and updates)
     val_test_datagen = ImageDataGenerator(rescale=1./255)
     
     train_generator = train_datagen.flow_from_directory(

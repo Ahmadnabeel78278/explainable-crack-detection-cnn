@@ -2,7 +2,10 @@ import tensorflow as tf
 from tensorflow.keras import layers, Model
 from tensorflow.keras.applications import MobileNet
 
+<<<<<<< HEAD
 # Helper functions for Lambda layers (import tf inside to avoid serialisation issues)
+=======
+>>>>>>> b48b3055 (Complete project with all source code and updates)
 def _mean_keepdims(x):
     import tensorflow as tf
     return tf.reduce_mean(x, axis=-1, keepdims=True)
@@ -32,7 +35,10 @@ def channel_attention(input_feature, ratio=8):
     return layers.Multiply()([input_feature, attention])
 
 def spatial_attention(input_feature):
+<<<<<<< HEAD
     # Use helper functions that import tensorflow internally
+=======
+>>>>>>> b48b3055 (Complete project with all source code and updates)
     avg_pool = layers.Lambda(_mean_keepdims)(input_feature)
     max_pool = layers.Lambda(_max_keepdims)(input_feature)
     concat = layers.Concatenate(axis=-1)([avg_pool, max_pool])
@@ -46,7 +52,11 @@ def cbam_block(input_feature):
 
 def build_model(input_shape=(224,224,3)):
     base_model = MobileNet(weights='imagenet', include_top=False, input_shape=input_shape)
+<<<<<<< HEAD
     base_model.trainable = False  # Freeze base layers initially
+=======
+    base_model.trainable = False 
+>>>>>>> b48b3055 (Complete project with all source code and updates)
 
     inputs = tf.keras.Input(shape=input_shape)
     x = base_model(inputs, training=False)
