@@ -15,18 +15,10 @@ if not api_key:
 
 client = genai.Client(api_key=api_key)
 
-<<<<<<< HEAD
-# --- Helper to discover available models (silent) ---
-=======
->>>>>>> b48b3055 (Complete project with all source code and updates)
 def get_working_model():
     """Return the name of a model that supports generateContent without printing."""
     try:
         models = client.models.list()
-<<<<<<< HEAD
-        # No printing of the full list
-=======
->>>>>>> b48b3055 (Complete project with all source code and updates)
         for m in models:
             if 'generateContent' in m.supported_actions:
                 # Prefer gemini-2.5-flash, then gemini-2.0-flash, then gemini-1.5-flash
@@ -36,25 +28,17 @@ def get_working_model():
                     return m.name
                 elif 'gemini-1.5-flash' in m.name:
                     return m.name
-<<<<<<< HEAD
         # Fallback: first model that supports generateContent
-=======
->>>>>>> b48b3055 (Complete project with all source code and updates)
         for m in models:
             if 'generateContent' in m.supported_actions:
                 return m.name
     except Exception as e:
-<<<<<<< HEAD
         print(f"Error listing models: {e}")  # Keep error message
         return "models/gemini-2.5-flash"  # fallback
-=======
-        print(f"Error listing models: {e}")
-        return "models/gemini-2.5-flash"
->>>>>>> b48b3055 (Complete project with all source code and updates)
     return None
 
 WORKING_MODEL = get_working_model()
-print(f"Using model: {WORKING_MODEL}")  
+print(f"Using model: {WORKING_MODEL}")
 
 def extract_full_text(response):
     """
@@ -62,16 +46,11 @@ def extract_full_text(response):
     Handles both response.text and candidates structure.
     """
     try:
-<<<<<<< HEAD
         # First try normal shortcut
         if hasattr(response, "text") and response.text:
             return response.text.strip()
 
         # Fallback: manually collect from candidates
-=======
-        if hasattr(response, "text") and response.text:
-            return response.text.strip()
->>>>>>> b48b3055 (Complete project with all source code and updates)
         full_text = ""
         if hasattr(response, "candidates"):
             for candidate in response.candidates:
@@ -84,11 +63,7 @@ def extract_full_text(response):
 
     except Exception as e:
         return f"Explanation extraction error: {str(e)}"
-<<<<<<< HEAD
 
-# Custom functions for model loading
-=======
->>>>>>> b48b3055 (Complete project with all source code and updates)
 def _mean_keepdims(x):
     import tensorflow as tf
     return tf.reduce_mean(x, axis=-1, keepdims=True)
@@ -114,20 +89,14 @@ def predict_image(model, image_path, img_size=(224,224)):
     return pred
 
 def explain_with_gemini(pred_class, confidence):
-
     prompt = f"""
 Prediction:
 Class: {pred_class}
 Confidence: {confidence:.2f}
 
-<<<<<<< HEAD
-Provide a clear explanation in 4 bullet points using '-' only.
-Keep it under 180 words.
-=======
 Provide a clear explanation and the possible reasons in 4 bullet points using '-' only. 
 Mainly keep focus on possible reasons for the prediction if crack is detected.
 Keep it under 130 words.
->>>>>>> b48b3055 (Complete project with all source code and updates)
 Be specific to this prediction.
 Avoid markdown formatting.
 """
@@ -138,18 +107,13 @@ Avoid markdown formatting.
             contents=prompt,
             config=types.GenerateContentConfig(
                 temperature=0.3,
-<<<<<<< HEAD
-                max_output_tokens=800,   # Increased to prevent cut-off
-=======
                 max_output_tokens=800,
->>>>>>> b48b3055 (Complete project with all source code and updates)
             )
         )
         return extract_full_text(response)
 
     except Exception as e:
         return f"Explanation unavailable: {str(e)}"
-
 
 def generate_gradcam(model, img_array, target_layer_name='multiply_1'):
     """
@@ -163,25 +127,15 @@ def generate_gradcam(model, img_array, target_layer_name='multiply_1'):
     
     with tf.GradientTape() as tape:
         outputs = grad_model(img_array)
-<<<<<<< HEAD
         # outputs is a list: [conv_output, predictions]
         conv_output = outputs[0]
         predictions = outputs[1]
         
         # If predictions is a list (e.g., for multiple outputs), take the first element
-=======
-        conv_output = outputs[0]
-        predictions = outputs[1]
->>>>>>> b48b3055 (Complete project with all source code and updates)
         if isinstance(predictions, list):
             pred_tensor = predictions[0]
         else:
             pred_tensor = predictions
-<<<<<<< HEAD
-        
-        # For binary classification, loss is the score for the predicted class
-=======
->>>>>>> b48b3055 (Complete project with all source code and updates)
         loss = pred_tensor[:, 0]
     
     grads = tape.gradient(loss, conv_output)
